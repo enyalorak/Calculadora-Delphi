@@ -1,0 +1,14 @@
+program CalculadoraProject;
+
+uses
+  Vcl.Forms,
+  Calculadora in 'Calculadora.pas' {btSomar};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TbtSomar, btSomar);
+  Application.Run;
+end.

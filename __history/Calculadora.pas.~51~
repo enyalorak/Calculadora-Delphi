@@ -1,0 +1,179 @@
+unit Calculadora;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Styles, Vcl.Themes;
+
+type
+  TbtSomar = class(TForm)
+    Label1: TLabel;
+    txtNum1: TEdit;
+    Label2: TLabel;
+    txtNum2: TEdit;
+    btSomar: TButton;
+    btSubtrair: TButton;
+    btMultiplicar: TButton;
+    btDividir: TButton;
+    Label3: TLabel;
+    txtResultado: TEdit;
+    opcVisual: TRadioGroup;
+    procedure btSomarClick(Sender: TObject);
+    procedure btSubtrairClick(Sender: TObject);
+    procedure btMultiplicarClick(Sender: TObject);
+    procedure btDividirClick(Sender: TObject);
+    procedure opcVisualClick(Sender: TObject);
+    procedure txtNum1Change(Sender: TObject);
+  private
+    { Private declarations }
+    function calcularResultado(num1, num2: Real; operacao: String): Real;
+    function validarCampos(): Boolean;
+    procedure habilitarBotoes(habilitado: Boolean);
+  public
+    { Public declarations }
+  end;
+
+var
+  btSomar: TbtSomar;
+
+implementation
+
+{$R *.dfm}
+
+
+
+      //ctrl shift c - implementa a procedure ou funcao
+  //    procedimento nao tem retorno
+//      funcao tem retorno
+
+
+
+//funcao geralmente n manipula elementos de tela e sim faz operaçoes
+//que é enviada pra outro codigo p manipular elementos de tela
+
+
+ { TbtMultiplicar }
+procedure TbtSomar.btMultiplicarClick(Sender: TObject);
+begin
+  if validarCampos then
+      txtResultado.Text := FloatToStr(calcularResultado(StrToFloat(txtNum1.Text), StrToFloat(txtNum2.Text),'multiplicar'));
+end;
+
+
+      { TbtSomar }
+procedure TbtSomar.btSomarClick(Sender: TObject);
+begin
+    if validarCampos then
+        txtResultado.Text := FloatToStr(calcularResultado(StrToFloat(txtNum1.Text), StrToFloat(txtNum2.Text),'somar'));
+end;
+
+
+  { TbtSubtrair }
+procedure TbtSomar.btSubtrairClick(Sender: TObject);
+begin
+  if validarCampos then
+    txtResultado.Text := FloatToStr(calcularResultado(StrToFloat(txtNum1.Text), StrToFloat(txtNum2.Text),'subtrair'));
+end;
+
+
+     { TbtDividir }
+procedure TbtSomar.btDividirClick(Sender: TObject);
+begin  //se a fun retornar true ele executa o codig abaixo, se false nd retorna
+  if validarCampos then
+    begin
+        if txtNum2.Text = '0' then
+          ShowMessage('Impossivel dividir por 0')
+        else
+          txtResultado.Text := FloatToStr(calcularResultado(StrToFloat(txtNum1.Text), StrToFloat(txtNum2.Text),'dividir'));
+    end;
+
+end;
+
+
+
+function TbtSomar.calcularResultado(num1, num2: Real; operacao: String): Real;
+var
+  resultado : Real;
+begin
+      if operacao = 'somar' then
+        resultado := num1 + num2;
+
+      if operacao = 'subtrair' then
+        resultado := num1 - num2;
+
+      if operacao = 'multiplicar' then
+        resultado := num1 * num2;
+
+      if operacao = 'dividir' then
+        resultado := num1 / num2;
+
+      Result := resultado;
+end;
+
+procedure TbtSomar.habilitarBotoes(habilitado: Boolean);
+begin
+  btSomar.Enabled := habilitado;
+  btSubtrair.Enabled := habilitado;
+  btMultiplicar.Enabled := habilitado;
+  btDividir.Enabled := habilitado;
+end;
+
+procedure TbtSomar.opcVisualClick(Sender: TObject);
+begin
+  case opcVisual.ItemIndex of
+    0: TStyleManager.SetStyle('Windows');
+    1: TStyleManager.SetStyle('Glow');
+    2: TStyleManager.SetStyle('Aqua Light Slate');
+  end;
+
+end;
+
+procedure TbtSomar.txtNum1Change(Sender: TObject);
+begin
+  if validarCampos then
+    habilitarBotoes(True)
+  else
+    habilitarBotoes(False);
+
+end;
+
+
+
+//validar campos vasios
+function TbtSomar.validarCampos: Boolean;
+begin
+  // Verifica se os campos de texto estão vazios
+  // Se txtNum1 ou txtNum2 estiverem vazios, retorna False
+  if (txtNum1.Text = '' ) or (txtNum2.Text = '') then
+    Result := False
+  else
+    try
+      // Tenta converter o texto dos campos txtNum1 e txtNum2 para Float
+      StrToFloat(txtNum1.Text);  // Se a conversão falhar, um erro será levantado
+      StrToFloat(txtNum2.Text);  // Mesma verificação para o segundo campo
+
+      // Se a conversão der certo  para ambos os campos, retorna True
+      Result := True;
+    except
+      // Captura erros específicos de conversão numérica (EConvertError)
+      // Caso ocorra um erro de conversão (valor não numérico), o programa entra aqui
+      on E: EConvertError do
+      begin
+        // Retorna False se houver erro de conversão
+        Result := False;
+      end;
+    end;
+end;
+
+
+
+
+
+
+
+end.
+
+
+
+
